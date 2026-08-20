@@ -236,7 +236,6 @@ function idlePose(gait: Gait, t: number): Pose {
       p.headRot = Math.sin(a - 0.7) * 0.06;
       p.legA = 0.12 + Math.sin(a) * 0.06;
       p.legB = 0.05 - Math.sin(a) * 0.06;
-      p.sway = Math.sin(a * 0.5) * 1.2;
       break;
     case "serpent":
       p.wave = 4.5;
@@ -250,7 +249,7 @@ function idlePose(gait: Gait, t: number): Pose {
       p.headRot = Math.sin(a - 0.8) * 0.05;
       p.legA = Math.sin(a) * 0.11;
       p.legB = -Math.sin(a) * 0.11;
-      p.torsoRot = Math.sin(a * 0.5) * 0.02;
+
   }
   return p;
 }
@@ -268,8 +267,7 @@ function walkPose(gait: Gait, t: number): Pose {
       p.liftA = Math.max(0, Math.sin(a)) * 8;
       p.liftB = Math.max(0, Math.sin(a + Math.PI)) * 8;
       p.lift = bob * 1.4;
-      p.sway = Math.sin(a) * 3.4;
-      p.lean = 0.035 + Math.sin(a * 2) * 0.03;
+      p.lean = 0.035;
       p.torsoRot = -Math.sin(a) * 0.05;
       p.torsoSy = 1 - impact * 0.09;
       p.sx = 1 + impact * 0.06;
@@ -283,8 +281,7 @@ function walkPose(gait: Gait, t: number): Pose {
       p.liftA = Math.max(0, Math.sin(a * 2)) * 8;
       p.liftB = Math.max(0, Math.sin(a * 2 + Math.PI)) * 8;
       p.lift = Math.abs(Math.sin(a * 2)) * 1.1;
-      p.sway = Math.sin(a * 2) * 2.2;
-      p.lean = 0.06 + Math.sin(a * 2) * 0.06;
+      p.lean = 0.06;
       p.torsoRot = Math.sin(a * 2) * 0.06;
       p.headRot = Math.sin(a * 2 - 0.8) * 0.12;
       break;
@@ -297,8 +294,7 @@ function walkPose(gait: Gait, t: number): Pose {
       p.liftA = Math.max(0, Math.sin(a * 2)) * 6;
       p.liftB = Math.max(0, Math.sin(a * 2 + Math.PI)) * 6;
       p.lift = 0;
-      p.sway = Math.sin(a * 2) * 2;
-      p.lean = Math.sin(a * 2) * 0.035;
+      p.lean = 0;
       p.torsoRot = Math.sin(a * 2 + 0.4) * 0.03;
       p.torsoSy = 1 - Math.abs(Math.sin(a * 2)) * 0.02;
       p.headRot = Math.sin(a * 2 - 0.5) * 0.04;
@@ -308,20 +304,17 @@ function walkPose(gait: Gait, t: number): Pose {
     case "float": {
       p.lift = 8 + Math.sin(a) * 5;
       p.flap = (Math.sin(a * 3) + 1) / 2;
-      p.lean = 0.09 + Math.sin(a) * 0.05;
+      p.lean = 0.09;
       p.legA = 0.24 + Math.sin(a) * 0.1;
       p.legB = 0.14 - Math.sin(a) * 0.1;
       p.headRot = Math.sin(a - 0.6) * 0.08;
-      p.sway = Math.sin(a) * 2.4;
       break;
     }
     case "serpent": {
       p.wave = 13;
       p.waves = 1.7;
       p.lift = 0.6 + Math.abs(Math.sin(a)) * 0.8;
-      p.lean = Math.sin(a) * 0.05;
-      p.sx = 1 + Math.sin(a) * 0.04;
-      p.sy = 1 - Math.sin(a) * 0.04;
+      p.lean = 0;
       break;
     }
     default: {
@@ -330,8 +323,7 @@ function walkPose(gait: Gait, t: number): Pose {
       p.liftA = Math.max(0, Math.sin(a)) * 9;
       p.liftB = Math.max(0, Math.sin(a + Math.PI)) * 9;
       p.lift = bob * 1.9;
-      p.sway = Math.sin(a) * 2.6;
-      p.lean = 0.05 + Math.sin(a * 2) * 0.035;
+      p.lean = 0.05;
       p.torsoRot = -Math.sin(a) * 0.07;
       p.torsoSy = 1 - impact * 0.07;
       p.sx = 1 + impact * 0.05;
