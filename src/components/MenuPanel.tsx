@@ -22,6 +22,7 @@ import {
   Zap,
 } from "lucide-react";
 import { PLAYER_CHARACTERS } from "@/game/assets";
+import { Bestiary } from "./Bestiary";
 import { CRITTER_ENEMIES, critterSrc } from "@/game/critters";
 import { CRITTER_TIER } from "@/game/critter-species";
 import { CHARACTERS, WEAPONS } from "@/game/engine";
@@ -912,21 +913,7 @@ export function MenuPanel({
         );
 
       case "collection":
-        return (
-          <div className="grid max-h-[46vh] grid-cols-3 gap-2.5 overflow-y-auto pr-1 sm:grid-cols-6">
-            {CRITTER_ENEMIES.map((d) => (
-              <div key={d.key} className="pop-card rounded-2xl p-2 text-center">
-                <Sprite src={critterSrc(d)[0]} className="mx-auto h-14 w-10" />
-                <p className="pop-label mt-1 truncate text-[10px] font-black uppercase">
-                  {d.name}
-                </p>
-                <p className="text-[9px] font-black uppercase text-gold">
-                  Tier {CRITTER_TIER[d.key as keyof typeof CRITTER_TIER]}
-                </p>
-              </div>
-            ))}
-          </div>
-        );
+        return <Bestiary compact />;
     }
   };
 
