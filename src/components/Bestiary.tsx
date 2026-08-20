@@ -29,7 +29,7 @@ function Chip({
   active: boolean;
   onClick: () => void;
   children: React.ReactNode;
-  color?: string;
+  color?: string | undefined;
 }) {
   return (
     <button
