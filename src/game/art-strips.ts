@@ -267,7 +267,7 @@ function walkPose(gait: Gait, t: number): Pose {
       p.legB = Math.sin(a + Math.PI) * 0.34;
       p.liftA = Math.max(0, Math.sin(a)) * 5;
       p.liftB = Math.max(0, Math.sin(a + Math.PI)) * 5;
-      p.lift = bob * 2.4;
+      p.lift = bob * 0.9;
       p.sway = Math.sin(a) * 2.6;
       p.lean = 0.035 + Math.sin(a * 2) * 0.03;
       p.torsoRot = -Math.sin(a) * 0.05;
@@ -282,11 +282,27 @@ function walkPose(gait: Gait, t: number): Pose {
       p.legB = Math.sin(a * 2 + Math.PI) * 0.5;
       p.liftA = Math.max(0, Math.sin(a * 2)) * 5;
       p.liftB = Math.max(0, Math.sin(a * 2 + Math.PI)) * 5;
-      p.lift = Math.abs(Math.sin(a * 2)) * 3.4;
+      p.lift = Math.abs(Math.sin(a * 2)) * 1.1;
       p.sway = Math.sin(a * 2) * 2.2;
       p.lean = 0.06 + Math.sin(a * 2) * 0.06;
       p.torsoRot = Math.sin(a * 2) * 0.06;
       p.headRot = Math.sin(a * 2 - 0.8) * 0.12;
+      break;
+    }
+    case "crawler": {
+      // alternating tripods: half the legs push while the other half reach.
+      // The carapace never leaves the ground plane, so it reads as a scuttle.
+      p.legA = Math.sin(a * 2) * 0.2;
+      p.legB = Math.sin(a * 2 + Math.PI) * 0.2;
+      p.liftA = Math.max(0, Math.sin(a * 2)) * 3;
+      p.liftB = Math.max(0, Math.sin(a * 2 + Math.PI)) * 3;
+      p.lift = 0;
+      p.sway = Math.sin(a * 2) * 1.3;
+      p.lean = Math.sin(a * 2) * 0.035;
+      p.torsoRot = Math.sin(a * 2 + 0.4) * 0.03;
+      p.torsoSy = 1 - Math.abs(Math.sin(a * 2)) * 0.02;
+      p.headRot = Math.sin(a * 2 - 0.5) * 0.04;
+      p.headDy = Math.abs(Math.sin(a * 2)) * 0.8;
       break;
     }
     case "float": {
