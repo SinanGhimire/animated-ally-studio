@@ -401,9 +401,34 @@ function drawPuppet(ctx: CanvasRenderingContext2D, b: Body, rig: Rig, p: Pose) {
     drawPart(ctx, b, 0, rig.headTo * 0.6, 0.3, rig.torsoTo, back);
   }
 
-  // back leg first so the front leg reads on top
-  drawPart(ctx, b, 0.5, rig.torsoTo, 1, 1, leg(0.5, 1, p.legB, p.liftB));
-  drawPart(ctx, b, 0, rig.torsoTo, 0.5, 1, leg(0, 0.5, p.legA, p.liftA));
+  if (rig.legCols > 2) {
+    // arachnid / insect: every leg column is its own limb, driven in two
+    // alternating tripods, and each one rotates about its own attachment point
+    // instead of being cut into a pair of human legs.
+    const n = rig.legCols;
+    const order = [...Array(n).keys()].sort(
+      (i, j) => Math.abs(j - (n - 1) / 2) - Math.abs(i - (n - 1) / 2),
+    ); // outer columns first, centre columns on top
+    for (const i of order) {
+      const fx0 = i / n;
+      const fx1 = (i + 1) / n;
+      const group = i % 2 === 0;
+      const dir = fx0 + fx1 < 1 ? -1 : 1; // mirror so both sides push outward
+      drawPart(
+        ctx,
+        b,
+        fx0,
+        rig.torsoTo,
+        fx1,
+        1,
+        leg(fx0, fx1, (group ? p.legA : p.legB) * dir, group ? p.liftA : p.liftB),
+      );
+    }
+  } else {
+    // back leg first so the front leg reads on top
+    drawPart(ctx, b, 0.5, rig.torsoTo, 1, 1, leg(0.5, 1, p.legB, p.liftB));
+    drawPart(ctx, b, 0, rig.torsoTo, 0.5, 1, leg(0, 0.5, p.legA, p.liftA));
+  }
 
   // torso pivots on the hips
   drawPart(ctx, b, 0, rig.headTo, 1, rig.torsoTo + 0.002, {
