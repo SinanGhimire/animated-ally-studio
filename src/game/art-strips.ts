@@ -208,16 +208,27 @@ function idlePose(gait: Gait, t: number): Pose {
       p.headRot = Math.sin(a - 0.9) * 0.05;
       p.legA = Math.sin(a) * 0.03;
       p.legB = -Math.sin(a) * 0.03;
-      p.lift = Math.max(0, br) * 0.8;
+      p.lift = Math.max(0, br) * 0.35;
       break;
     case "skitter":
-      p.lift = Math.abs(Math.sin(a * 2)) * 1.8;
+      p.lift = Math.abs(Math.sin(a * 2)) * 0.6;
       p.legA = Math.sin(a * 3) * 0.18;
       p.legB = -Math.sin(a * 3) * 0.18;
       p.liftA = Math.max(0, Math.sin(a * 3)) * 2;
       p.liftB = Math.max(0, -Math.sin(a * 3)) * 2;
       p.headRot = Math.sin(a * 3 + 1) * 0.07;
       p.torsoRot = Math.sin(a * 3) * 0.03;
+      break;
+    case "crawler":
+      // carapace breathes, legs twitch in two alternating tripods, body stays down
+      p.lift = 0;
+      p.torsoSy = 1 + br * 0.03;
+      p.legA = Math.sin(a * 2) * 0.05;
+      p.legB = -Math.sin(a * 2) * 0.05;
+      p.liftA = Math.max(0, Math.sin(a * 2)) * 1.1;
+      p.liftB = Math.max(0, -Math.sin(a * 2)) * 1.1;
+      p.headRot = Math.sin(a * 2 - 0.6) * 0.03;
+      p.headDy = br * 0.7;
       break;
     case "float":
       p.lift = 6 + Math.sin(a) * 4;
@@ -230,10 +241,10 @@ function idlePose(gait: Gait, t: number): Pose {
     case "serpent":
       p.wave = 4.5;
       p.waves = 1.25;
-      p.lift = 1 + Math.sin(a) * 1.2;
+      p.lift = 0.4 + Math.sin(a) * 0.4;
       break;
     default:
-      p.lift = Math.max(0, br) * 1.4;
+      p.lift = Math.max(0, br) * 0.5;
       p.torsoSy = 1 + br * 0.05;
       p.headDy = br * 1.8;
       p.headRot = Math.sin(a - 0.8) * 0.05;
