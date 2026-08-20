@@ -10,7 +10,7 @@ import { FRAME, IDLE_FRAMES, WALK_FRAMES, DEATH_FRAMES } from "./critters";
  * wings flap. Serpents keep a travelling slice wave instead of legs.
  */
 
-export type Gait = "ground" | "heavy" | "skitter" | "float" | "serpent";
+export type Gait = "ground" | "heavy" | "skitter" | "float" | "serpent" | "crawler";
 
 type Anim = "idle" | "walk" | "death";
 
