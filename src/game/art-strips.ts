@@ -132,8 +132,8 @@ function drawWave(
 function contactShadow(ctx: CanvasRenderingContext2D, w: number, lift: number, alpha = 1) {
   const t = Math.max(0, Math.min(1, lift / 16));
   ctx.save();
-  ctx.globalAlpha = (0.32 - t * 0.16) * alpha;
-  ctx.fillStyle = "#08060e";
+  ctx.globalAlpha = (0.62 - t * 0.14) * alpha;
+  ctx.fillStyle = "#151027";
   ctx.beginPath();
   ctx.ellipse(0, 0, w * 0.36 * (1 - t * 0.22), w * 0.11 * (1 - t * 0.18), 0, 0, Math.PI * 2);
   ctx.fill();
