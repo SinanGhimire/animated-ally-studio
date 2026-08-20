@@ -23,8 +23,6 @@ import {
 } from "lucide-react";
 import { PLAYER_CHARACTERS } from "@/game/assets";
 import { Bestiary } from "./Bestiary";
-import { CRITTER_ENEMIES, critterSrc } from "@/game/critters";
-import { CRITTER_TIER } from "@/game/critter-species";
 import { CHARACTERS, WEAPONS } from "@/game/engine";
 import { RARITY_COLOR, UPGRADES } from "@/game/upgrades";
 import { isNewDay, levelFor, useProfile, XP_PER_LEVEL, xpInLevel } from "@/game/profile";
