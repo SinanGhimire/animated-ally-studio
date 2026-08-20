@@ -11,6 +11,16 @@ const ANIMS: { key: AnimKey; label: string; fps: number; loop: boolean }[] = [
   { key: "death", label: "Death", fps: 12, loop: false },
 ];
 
+/** Human-readable name for each animation rig. */
+const GAIT_LABEL: Record<string, string> = {
+  ground: "Two-leg walk",
+  heavy: "Heavy stomp",
+  skitter: "Skitter",
+  crawler: "Multi-leg crawl",
+  float: "Hover / flight",
+  serpent: "Slither",
+};
+
 const CLASS_FILTERS: ("all" | EnemyClass)[] = [
   "all",
   "fodder",
