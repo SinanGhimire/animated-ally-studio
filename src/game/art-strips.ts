@@ -468,14 +468,42 @@ function drawPuppet(ctx: CanvasRenderingContext2D, b: Body, rig: Rig, p: Pose) {
   });
 }
 
+/** Pixel grid: every frame is composed at this size, then blown up 1:N. */
+const PIX = 64;
+
+/**
+ * Snaps colours to a coarse ramp and hard-cuts the alpha so the upscaled
+ * result reads as hand-placed pixels instead of a smooth photo blowup.
+ */
+function posterize(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  const data = ctx.getImageData(0, 0, w, h);
+  const d = data.data;
+  const step = 26;
+  for (let i = 0; i < d.length; i += 4) {
+    const a = d[i + 3];
+    if (a < 108) {
+      d[i + 3] = 0;
+      continue;
+    }
+    d[i + 3] = 255;
+    d[i] = Math.min(255, Math.round(d[i] / step) * step);
+    d[i + 1] = Math.min(255, Math.round(d[i + 1] / step) * step);
+    d[i + 2] = Math.min(255, Math.round(d[i + 2] / step) * step);
+  }
+  ctx.putImageData(data, 0, 0);
+}
+
 function buildStrip(img: HTMLImageElement, anim: Anim, gait: Gait): string {
   const frames = frameCount(anim);
-  const cv = document.createElement("canvas");
-  cv.width = FRAME * frames;
-  cv.height = FRAME;
-  const ctx = cv.getContext("2d")!;
+  // 1) compose the animation on the low-res pixel grid
+  const k = PIX / FRAME;
+  const small = document.createElement("canvas");
+  small.width = PIX * frames;
+  small.height = PIX;
+  const ctx = small.getContext("2d")!;
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = "high";
+  ctx.setTransform(k, 0, 0, k, 0, 0);
 
   const pad = 12;
   const box = FRAME - pad * 2;
@@ -518,6 +546,16 @@ function buildStrip(img: HTMLImageElement, anim: Anim, gait: Gait): string {
     ctx.restore();
   }
 
+  // 2) quantise, then blow the grid up with no filtering so pixels stay square
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  posterize(ctx, small.width, small.height);
+
+  const cv = document.createElement("canvas");
+  cv.width = FRAME * frames;
+  cv.height = FRAME;
+  const out = cv.getContext("2d")!;
+  out.imageSmoothingEnabled = false;
+  out.drawImage(small, 0, 0, cv.width, cv.height);
   return cv.toDataURL();
 }
 
