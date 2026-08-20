@@ -42,18 +42,23 @@ interface Rig {
   headTo: number;
   torsoTo: number;
   hasWings: boolean;
+  /** number of leg columns; 2 = humanoid, more = arachnid/insect shuffle */
+  legCols: number;
 }
 
 function rigFor(gait: Gait): Rig {
   switch (gait) {
     case "heavy":
-      return { headTo: 0.3, torsoTo: 0.74, hasWings: false };
+      return { headTo: 0.3, torsoTo: 0.74, hasWings: false, legCols: 2 };
     case "skitter":
-      return { headTo: 0.32, torsoTo: 0.62, hasWings: false };
+      return { headTo: 0.32, torsoTo: 0.62, hasWings: false, legCols: 2 };
+    case "crawler":
+      // many-legged bodies hang from a high carapace, so the legs band starts early
+      return { headTo: 0.3, torsoTo: 0.5, hasWings: false, legCols: 6 };
     case "float":
-      return { headTo: 0.34, torsoTo: 0.82, hasWings: true };
+      return { headTo: 0.34, torsoTo: 0.82, hasWings: true, legCols: 2 };
     default:
-      return { headTo: 0.33, torsoTo: 0.68, hasWings: false };
+      return { headTo: 0.33, torsoTo: 0.68, hasWings: false, legCols: 2 };
   }
 }
 
