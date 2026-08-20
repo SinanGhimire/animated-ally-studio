@@ -318,7 +318,7 @@ function walkPose(gait: Gait, t: number): Pose {
     case "serpent": {
       p.wave = 8;
       p.waves = 1.6;
-      p.lift = 2 + Math.abs(Math.sin(a)) * 2.5;
+      p.lift = 0.6 + Math.abs(Math.sin(a)) * 0.8;
       p.lean = Math.sin(a) * 0.05;
       p.sx = 1 + Math.sin(a) * 0.04;
       p.sy = 1 - Math.sin(a) * 0.04;
@@ -329,7 +329,7 @@ function walkPose(gait: Gait, t: number): Pose {
       p.legB = Math.sin(a + Math.PI) * 0.46;
       p.liftA = Math.max(0, Math.sin(a)) * 5.5;
       p.liftB = Math.max(0, Math.sin(a + Math.PI)) * 5.5;
-      p.lift = bob * 3.6;
+      p.lift = bob * 1.3;
       p.sway = Math.sin(a) * 1.8;
       p.lean = 0.05 + Math.sin(a * 2) * 0.035;
       p.torsoRot = -Math.sin(a) * 0.07;
