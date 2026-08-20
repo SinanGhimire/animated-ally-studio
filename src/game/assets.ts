@@ -83,7 +83,8 @@ function gaitFor(key: ActorKey): Gait {
   if (d.shape === "serpent" || d.shape === "worm" || d.shape === "long") return "serpent";
   if (d.legs === "none" || d.wings || d.shape === "ghost" || d.shape === "orb" || d.shape === "jelly")
     return "float";
-  if (d.legs === "many" || d.size <= 0.85) return "skitter";
+  if (d.legs === "many") return "crawler";
+  if (d.size <= 0.85) return "skitter";
   if (d.size >= 1.3) return "heavy";
   return "ground";
 }
