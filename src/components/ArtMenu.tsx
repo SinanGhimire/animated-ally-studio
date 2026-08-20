@@ -1,4 +1,5 @@
-import { Settings, Volume2, VolumeX } from "lucide-react";
+import { Settings, Volume2, VolumeX, Skull } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import menuArt from "@/assets/echo-menu-art-v2.png";
 import type { RunMode } from "@/game/types";
 
@@ -154,6 +155,13 @@ export function ArtMenu({
               <Volume2 className="h-5 w-5 text-ink sm:h-7 sm:w-7" strokeWidth={2.75} />
             )}
           </button>
+          <Link
+            to="/bestiary"
+            aria-label="Bestiary"
+            className="art-icon grid h-10 w-10 place-items-center sm:h-14 sm:w-14"
+          >
+            <Skull className="h-5 w-5 text-ink sm:h-7 sm:w-7" strokeWidth={2.75} />
+          </Link>
         </div>
 
       </div>
