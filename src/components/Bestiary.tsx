@@ -167,6 +167,7 @@ export function Bestiary({ compact = false }: { compact?: boolean }) {
                   </p>
                 )}
                 <div className="mt-1.5 grid gap-0.5">
+                  <Stat label="Rig" value={GAIT_LABEL[e.gait]} />
                   <Stat label="Tier" value={`${e.tier}`} />
                   <Stat label="HP" value={`${e.hp}`} />
                   <Stat label="Damage" value={`${e.damage}`} />
