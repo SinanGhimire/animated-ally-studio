@@ -10,7 +10,7 @@ import { FRAME, IDLE_FRAMES, WALK_FRAMES, DEATH_FRAMES } from "./critters";
  * wings flap. Serpents keep a travelling slice wave instead of legs.
  */
 
-export type Gait = "ground" | "heavy" | "skitter" | "float" | "serpent";
+export type Gait = "ground" | "heavy" | "skitter" | "float" | "serpent" | "crawler";
 
 type Anim = "idle" | "walk" | "death";
 
@@ -42,18 +42,23 @@ interface Rig {
   headTo: number;
   torsoTo: number;
   hasWings: boolean;
+  /** number of leg columns; 2 = humanoid, more = arachnid/insect shuffle */
+  legCols: number;
 }
 
 function rigFor(gait: Gait): Rig {
   switch (gait) {
     case "heavy":
-      return { headTo: 0.3, torsoTo: 0.74, hasWings: false };
+      return { headTo: 0.3, torsoTo: 0.74, hasWings: false, legCols: 2 };
     case "skitter":
-      return { headTo: 0.32, torsoTo: 0.62, hasWings: false };
+      return { headTo: 0.32, torsoTo: 0.62, hasWings: false, legCols: 2 };
+    case "crawler":
+      // many-legged bodies hang from a high carapace, so the legs band starts early
+      return { headTo: 0.3, torsoTo: 0.5, hasWings: false, legCols: 6 };
     case "float":
-      return { headTo: 0.34, torsoTo: 0.82, hasWings: true };
+      return { headTo: 0.34, torsoTo: 0.82, hasWings: true, legCols: 2 };
     default:
-      return { headTo: 0.33, torsoTo: 0.68, hasWings: false };
+      return { headTo: 0.33, torsoTo: 0.68, hasWings: false, legCols: 2 };
   }
 }
 
@@ -203,16 +208,27 @@ function idlePose(gait: Gait, t: number): Pose {
       p.headRot = Math.sin(a - 0.9) * 0.05;
       p.legA = Math.sin(a) * 0.03;
       p.legB = -Math.sin(a) * 0.03;
-      p.lift = Math.max(0, br) * 0.8;
+      p.lift = Math.max(0, br) * 0.35;
       break;
     case "skitter":
-      p.lift = Math.abs(Math.sin(a * 2)) * 1.8;
+      p.lift = Math.abs(Math.sin(a * 2)) * 0.6;
       p.legA = Math.sin(a * 3) * 0.18;
       p.legB = -Math.sin(a * 3) * 0.18;
       p.liftA = Math.max(0, Math.sin(a * 3)) * 2;
       p.liftB = Math.max(0, -Math.sin(a * 3)) * 2;
       p.headRot = Math.sin(a * 3 + 1) * 0.07;
       p.torsoRot = Math.sin(a * 3) * 0.03;
+      break;
+    case "crawler":
+      // carapace breathes, legs twitch in two alternating tripods, body stays down
+      p.lift = 0;
+      p.torsoSy = 1 + br * 0.03;
+      p.legA = Math.sin(a * 2) * 0.05;
+      p.legB = -Math.sin(a * 2) * 0.05;
+      p.liftA = Math.max(0, Math.sin(a * 2)) * 1.1;
+      p.liftB = Math.max(0, -Math.sin(a * 2)) * 1.1;
+      p.headRot = Math.sin(a * 2 - 0.6) * 0.03;
+      p.headDy = br * 0.7;
       break;
     case "float":
       p.lift = 6 + Math.sin(a) * 4;
@@ -225,10 +241,10 @@ function idlePose(gait: Gait, t: number): Pose {
     case "serpent":
       p.wave = 4.5;
       p.waves = 1.25;
-      p.lift = 1 + Math.sin(a) * 1.2;
+      p.lift = 0.4 + Math.sin(a) * 0.4;
       break;
     default:
-      p.lift = Math.max(0, br) * 1.4;
+      p.lift = Math.max(0, br) * 0.5;
       p.torsoSy = 1 + br * 0.05;
       p.headDy = br * 1.8;
       p.headRot = Math.sin(a - 0.8) * 0.05;
@@ -251,7 +267,7 @@ function walkPose(gait: Gait, t: number): Pose {
       p.legB = Math.sin(a + Math.PI) * 0.34;
       p.liftA = Math.max(0, Math.sin(a)) * 5;
       p.liftB = Math.max(0, Math.sin(a + Math.PI)) * 5;
-      p.lift = bob * 2.4;
+      p.lift = bob * 0.9;
       p.sway = Math.sin(a) * 2.6;
       p.lean = 0.035 + Math.sin(a * 2) * 0.03;
       p.torsoRot = -Math.sin(a) * 0.05;
@@ -266,11 +282,27 @@ function walkPose(gait: Gait, t: number): Pose {
       p.legB = Math.sin(a * 2 + Math.PI) * 0.5;
       p.liftA = Math.max(0, Math.sin(a * 2)) * 5;
       p.liftB = Math.max(0, Math.sin(a * 2 + Math.PI)) * 5;
-      p.lift = Math.abs(Math.sin(a * 2)) * 3.4;
+      p.lift = Math.abs(Math.sin(a * 2)) * 1.1;
       p.sway = Math.sin(a * 2) * 2.2;
       p.lean = 0.06 + Math.sin(a * 2) * 0.06;
       p.torsoRot = Math.sin(a * 2) * 0.06;
       p.headRot = Math.sin(a * 2 - 0.8) * 0.12;
+      break;
+    }
+    case "crawler": {
+      // alternating tripods: half the legs push while the other half reach.
+      // The carapace never leaves the ground plane, so it reads as a scuttle.
+      p.legA = Math.sin(a * 2) * 0.2;
+      p.legB = Math.sin(a * 2 + Math.PI) * 0.2;
+      p.liftA = Math.max(0, Math.sin(a * 2)) * 3;
+      p.liftB = Math.max(0, Math.sin(a * 2 + Math.PI)) * 3;
+      p.lift = 0;
+      p.sway = Math.sin(a * 2) * 1.3;
+      p.lean = Math.sin(a * 2) * 0.035;
+      p.torsoRot = Math.sin(a * 2 + 0.4) * 0.03;
+      p.torsoSy = 1 - Math.abs(Math.sin(a * 2)) * 0.02;
+      p.headRot = Math.sin(a * 2 - 0.5) * 0.04;
+      p.headDy = Math.abs(Math.sin(a * 2)) * 0.8;
       break;
     }
     case "float": {
@@ -286,7 +318,7 @@ function walkPose(gait: Gait, t: number): Pose {
     case "serpent": {
       p.wave = 8;
       p.waves = 1.6;
-      p.lift = 2 + Math.abs(Math.sin(a)) * 2.5;
+      p.lift = 0.6 + Math.abs(Math.sin(a)) * 0.8;
       p.lean = Math.sin(a) * 0.05;
       p.sx = 1 + Math.sin(a) * 0.04;
       p.sy = 1 - Math.sin(a) * 0.04;
@@ -297,7 +329,7 @@ function walkPose(gait: Gait, t: number): Pose {
       p.legB = Math.sin(a + Math.PI) * 0.46;
       p.liftA = Math.max(0, Math.sin(a)) * 5.5;
       p.liftB = Math.max(0, Math.sin(a + Math.PI)) * 5.5;
-      p.lift = bob * 3.6;
+      p.lift = bob * 1.3;
       p.sway = Math.sin(a) * 1.8;
       p.lean = 0.05 + Math.sin(a * 2) * 0.035;
       p.torsoRot = -Math.sin(a) * 0.07;
@@ -318,17 +350,19 @@ function deathPose(gait: Gait, k: number): Pose {
   const ease = fall * fall * (3 - 2 * fall);
   p.flash = pop;
   p.lift = (gait === "float" ? 10 * (1 - ease) : 0) + pop * 6;
-  p.sway = ease * 9;
-  p.lean = ease * 1.35;
-  p.sx = (1 + pop * 0.1) * (1 + ease * 0.08);
-  p.sy = (1 + pop * 0.16) * (1 - ease * 0.4);
-  p.legA = ease * 0.9;
-  p.legB = -ease * 0.7;
-  p.liftA = ease * 4;
-  p.liftB = ease * 2;
-  p.headRot = -ease * 0.5;
-  p.headDy = ease * 2;
-  p.torsoRot = ease * 0.2;
+  const crawler = gait === "crawler";
+  // spiders don't topple over — they drop, curl their legs in and flatten
+  p.sway = ease * (crawler ? 2 : 9);
+  p.lean = ease * (crawler ? 0.18 : 1.35);
+  p.sx = (1 + pop * 0.1) * (1 + ease * (crawler ? 0.14 : 0.08));
+  p.sy = (1 + pop * 0.16) * (1 - ease * (crawler ? 0.5 : 0.4));
+  p.legA = ease * (crawler ? 0.55 : 0.9);
+  p.legB = -ease * (crawler ? 0.55 : 0.7);
+  p.liftA = ease * (crawler ? 1.5 : 4);
+  p.liftB = ease * (crawler ? 1.5 : 2);
+  p.headRot = -ease * (crawler ? 0.1 : 0.5);
+  p.headDy = ease * (crawler ? 4 : 2);
+  p.torsoRot = ease * (crawler ? 0.05 : 0.2);
   p.flap = gait === "float" ? Math.max(0, 1 - ease * 2) : 0;
   p.wave = gait === "serpent" ? 6 * (1 - ease) : 0;
   p.waves = 1.2;
@@ -369,9 +403,34 @@ function drawPuppet(ctx: CanvasRenderingContext2D, b: Body, rig: Rig, p: Pose) {
     drawPart(ctx, b, 0, rig.headTo * 0.6, 0.3, rig.torsoTo, back);
   }
 
-  // back leg first so the front leg reads on top
-  drawPart(ctx, b, 0.5, rig.torsoTo, 1, 1, leg(0.5, 1, p.legB, p.liftB));
-  drawPart(ctx, b, 0, rig.torsoTo, 0.5, 1, leg(0, 0.5, p.legA, p.liftA));
+  if (rig.legCols > 2) {
+    // arachnid / insect: every leg column is its own limb, driven in two
+    // alternating tripods, and each one rotates about its own attachment point
+    // instead of being cut into a pair of human legs.
+    const n = rig.legCols;
+    const order = [...Array(n).keys()].sort(
+      (i, j) => Math.abs(j - (n - 1) / 2) - Math.abs(i - (n - 1) / 2),
+    ); // outer columns first, centre columns on top
+    for (const i of order) {
+      const fx0 = i / n;
+      const fx1 = (i + 1) / n;
+      const group = i % 2 === 0;
+      const dir = fx0 + fx1 < 1 ? -1 : 1; // mirror so both sides push outward
+      drawPart(
+        ctx,
+        b,
+        fx0,
+        rig.torsoTo,
+        fx1,
+        1,
+        leg(fx0, fx1, (group ? p.legA : p.legB) * dir, group ? p.liftA : p.liftB),
+      );
+    }
+  } else {
+    // back leg first so the front leg reads on top
+    drawPart(ctx, b, 0.5, rig.torsoTo, 1, 1, leg(0.5, 1, p.legB, p.liftB));
+    drawPart(ctx, b, 0, rig.torsoTo, 0.5, 1, leg(0, 0.5, p.legA, p.liftA));
+  }
 
   // torso pivots on the hips
   drawPart(ctx, b, 0, rig.headTo, 1, rig.torsoTo + 0.002, {

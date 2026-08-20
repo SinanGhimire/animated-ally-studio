@@ -11,6 +11,16 @@ const ANIMS: { key: AnimKey; label: string; fps: number; loop: boolean }[] = [
   { key: "death", label: "Death", fps: 12, loop: false },
 ];
 
+/** Human-readable name for each animation rig. */
+const GAIT_LABEL: Record<string, string> = {
+  ground: "Two-leg walk",
+  heavy: "Heavy stomp",
+  skitter: "Skitter",
+  crawler: "Multi-leg crawl",
+  float: "Hover / flight",
+  serpent: "Slither",
+};
+
 const CLASS_FILTERS: ("all" | EnemyClass)[] = [
   "all",
   "fodder",
@@ -167,6 +177,7 @@ export function Bestiary({ compact = false }: { compact?: boolean }) {
                   </p>
                 )}
                 <div className="mt-1.5 grid gap-0.5">
+                  <Stat label="Rig" value={GAIT_LABEL[e.gait] ?? e.gait} />
                   <Stat label="Tier" value={`${e.tier}`} />
                   <Stat label="HP" value={`${e.hp}`} />
                   <Stat label="Damage" value={`${e.damage}`} />
