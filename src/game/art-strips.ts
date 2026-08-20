@@ -132,8 +132,8 @@ function drawWave(
 function contactShadow(ctx: CanvasRenderingContext2D, w: number, lift: number, alpha = 1) {
   const t = Math.max(0, Math.min(1, lift / 16));
   ctx.save();
-  ctx.globalAlpha = (0.32 - t * 0.16) * alpha;
-  ctx.fillStyle = "#08060e";
+  ctx.globalAlpha = (0.62 - t * 0.14) * alpha;
+  ctx.fillStyle = "#151027";
   ctx.beginPath();
   ctx.ellipse(0, 0, w * 0.36 * (1 - t * 0.22), w * 0.11 * (1 - t * 0.18), 0, 0, Math.PI * 2);
   ctx.fill();
@@ -212,8 +212,8 @@ function idlePose(gait: Gait, t: number): Pose {
       break;
     case "skitter":
       p.lift = Math.abs(Math.sin(a * 2)) * 0.6;
-      p.legA = Math.sin(a * 3) * 0.18;
-      p.legB = -Math.sin(a * 3) * 0.18;
+      p.legA = Math.sin(a * 3) * 0.3;
+      p.legB = -Math.sin(a * 3) * 0.3;
       p.liftA = Math.max(0, Math.sin(a * 3)) * 2;
       p.liftB = Math.max(0, -Math.sin(a * 3)) * 2;
       p.headRot = Math.sin(a * 3 + 1) * 0.07;
@@ -223,8 +223,8 @@ function idlePose(gait: Gait, t: number): Pose {
       // carapace breathes, legs twitch in two alternating tripods, body stays down
       p.lift = 0;
       p.torsoSy = 1 + br * 0.03;
-      p.legA = Math.sin(a * 2) * 0.05;
-      p.legB = -Math.sin(a * 2) * 0.05;
+      p.legA = Math.sin(a * 2) * 0.13;
+      p.legB = -Math.sin(a * 2) * 0.13;
       p.liftA = Math.max(0, Math.sin(a * 2)) * 1.1;
       p.liftB = Math.max(0, -Math.sin(a * 2)) * 1.1;
       p.headRot = Math.sin(a * 2 - 0.6) * 0.03;
@@ -248,8 +248,8 @@ function idlePose(gait: Gait, t: number): Pose {
       p.torsoSy = 1 + br * 0.05;
       p.headDy = br * 1.8;
       p.headRot = Math.sin(a - 0.8) * 0.05;
-      p.legA = Math.sin(a) * 0.05;
-      p.legB = -Math.sin(a) * 0.05;
+      p.legA = Math.sin(a) * 0.11;
+      p.legB = -Math.sin(a) * 0.11;
       p.torsoRot = Math.sin(a * 0.5) * 0.02;
   }
   return p;
@@ -263,12 +263,12 @@ function walkPose(gait: Gait, t: number): Pose {
   const bob = Math.abs(Math.sin(a));
   switch (gait) {
     case "heavy": {
-      p.legA = Math.sin(a) * 0.34;
-      p.legB = Math.sin(a + Math.PI) * 0.34;
-      p.liftA = Math.max(0, Math.sin(a)) * 5;
-      p.liftB = Math.max(0, Math.sin(a + Math.PI)) * 5;
-      p.lift = bob * 0.9;
-      p.sway = Math.sin(a) * 2.6;
+      p.legA = Math.sin(a) * 0.58;
+      p.legB = Math.sin(a + Math.PI) * 0.58;
+      p.liftA = Math.max(0, Math.sin(a)) * 8;
+      p.liftB = Math.max(0, Math.sin(a + Math.PI)) * 8;
+      p.lift = bob * 1.4;
+      p.sway = Math.sin(a) * 3.4;
       p.lean = 0.035 + Math.sin(a * 2) * 0.03;
       p.torsoRot = -Math.sin(a) * 0.05;
       p.torsoSy = 1 - impact * 0.09;
@@ -278,10 +278,10 @@ function walkPose(gait: Gait, t: number): Pose {
       break;
     }
     case "skitter": {
-      p.legA = Math.sin(a * 2) * 0.5;
-      p.legB = Math.sin(a * 2 + Math.PI) * 0.5;
-      p.liftA = Math.max(0, Math.sin(a * 2)) * 5;
-      p.liftB = Math.max(0, Math.sin(a * 2 + Math.PI)) * 5;
+      p.legA = Math.sin(a * 2) * 0.78;
+      p.legB = Math.sin(a * 2 + Math.PI) * 0.78;
+      p.liftA = Math.max(0, Math.sin(a * 2)) * 8;
+      p.liftB = Math.max(0, Math.sin(a * 2 + Math.PI)) * 8;
       p.lift = Math.abs(Math.sin(a * 2)) * 1.1;
       p.sway = Math.sin(a * 2) * 2.2;
       p.lean = 0.06 + Math.sin(a * 2) * 0.06;
@@ -292,12 +292,12 @@ function walkPose(gait: Gait, t: number): Pose {
     case "crawler": {
       // alternating tripods: half the legs push while the other half reach.
       // The carapace never leaves the ground plane, so it reads as a scuttle.
-      p.legA = Math.sin(a * 2) * 0.2;
-      p.legB = Math.sin(a * 2 + Math.PI) * 0.2;
-      p.liftA = Math.max(0, Math.sin(a * 2)) * 3;
-      p.liftB = Math.max(0, Math.sin(a * 2 + Math.PI)) * 3;
+      p.legA = Math.sin(a * 2) * 0.46;
+      p.legB = Math.sin(a * 2 + Math.PI) * 0.46;
+      p.liftA = Math.max(0, Math.sin(a * 2)) * 6;
+      p.liftB = Math.max(0, Math.sin(a * 2 + Math.PI)) * 6;
       p.lift = 0;
-      p.sway = Math.sin(a * 2) * 1.3;
+      p.sway = Math.sin(a * 2) * 2;
       p.lean = Math.sin(a * 2) * 0.035;
       p.torsoRot = Math.sin(a * 2 + 0.4) * 0.03;
       p.torsoSy = 1 - Math.abs(Math.sin(a * 2)) * 0.02;
@@ -316,8 +316,8 @@ function walkPose(gait: Gait, t: number): Pose {
       break;
     }
     case "serpent": {
-      p.wave = 8;
-      p.waves = 1.6;
+      p.wave = 13;
+      p.waves = 1.7;
       p.lift = 0.6 + Math.abs(Math.sin(a)) * 0.8;
       p.lean = Math.sin(a) * 0.05;
       p.sx = 1 + Math.sin(a) * 0.04;
@@ -325,12 +325,12 @@ function walkPose(gait: Gait, t: number): Pose {
       break;
     }
     default: {
-      p.legA = Math.sin(a) * 0.46;
-      p.legB = Math.sin(a + Math.PI) * 0.46;
-      p.liftA = Math.max(0, Math.sin(a)) * 5.5;
-      p.liftB = Math.max(0, Math.sin(a + Math.PI)) * 5.5;
-      p.lift = bob * 1.3;
-      p.sway = Math.sin(a) * 1.8;
+      p.legA = Math.sin(a) * 0.76;
+      p.legB = Math.sin(a + Math.PI) * 0.76;
+      p.liftA = Math.max(0, Math.sin(a)) * 9;
+      p.liftB = Math.max(0, Math.sin(a + Math.PI)) * 9;
+      p.lift = bob * 1.9;
+      p.sway = Math.sin(a) * 2.6;
       p.lean = 0.05 + Math.sin(a * 2) * 0.035;
       p.torsoRot = -Math.sin(a) * 0.07;
       p.torsoSy = 1 - impact * 0.07;
@@ -468,14 +468,42 @@ function drawPuppet(ctx: CanvasRenderingContext2D, b: Body, rig: Rig, p: Pose) {
   });
 }
 
+/** Pixel grid: every frame is composed at this size, then blown up 1:N. */
+const PIX = 64;
+
+/**
+ * Snaps colours to a coarse ramp and hard-cuts the alpha so the upscaled
+ * result reads as hand-placed pixels instead of a smooth photo blowup.
+ */
+function posterize(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  const data = ctx.getImageData(0, 0, w, h);
+  const d = data.data;
+  const step = 26;
+  const snap = (v: number) => Math.min(255, Math.round(v / step) * step);
+  for (let i = 0; i < d.length; i += 4) {
+    if ((d[i + 3] ?? 0) < 108) {
+      d[i + 3] = 0;
+      continue;
+    }
+    d[i + 3] = 255;
+    d[i] = snap(d[i] ?? 0);
+    d[i + 1] = snap(d[i + 1] ?? 0);
+    d[i + 2] = snap(d[i + 2] ?? 0);
+  }
+  ctx.putImageData(data, 0, 0);
+}
+
 function buildStrip(img: HTMLImageElement, anim: Anim, gait: Gait): string {
   const frames = frameCount(anim);
-  const cv = document.createElement("canvas");
-  cv.width = FRAME * frames;
-  cv.height = FRAME;
-  const ctx = cv.getContext("2d")!;
+  // 1) compose the animation on the low-res pixel grid
+  const k = PIX / FRAME;
+  const small = document.createElement("canvas");
+  small.width = PIX * frames;
+  small.height = PIX;
+  const ctx = small.getContext("2d")!;
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = "high";
+  ctx.setTransform(k, 0, 0, k, 0, 0);
 
   const pad = 12;
   const box = FRAME - pad * 2;
@@ -518,6 +546,16 @@ function buildStrip(img: HTMLImageElement, anim: Anim, gait: Gait): string {
     ctx.restore();
   }
 
+  // 2) quantise, then blow the grid up with no filtering so pixels stay square
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  posterize(ctx, small.width, small.height);
+
+  const cv = document.createElement("canvas");
+  cv.width = FRAME * frames;
+  cv.height = FRAME;
+  const out = cv.getContext("2d")!;
+  out.imageSmoothingEnabled = false;
+  out.drawImage(small, 0, 0, cv.width, cv.height);
   return cv.toDataURL();
 }
 
