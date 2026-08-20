@@ -479,16 +479,16 @@ function posterize(ctx: CanvasRenderingContext2D, w: number, h: number) {
   const data = ctx.getImageData(0, 0, w, h);
   const d = data.data;
   const step = 26;
+  const snap = (v: number) => Math.min(255, Math.round(v / step) * step);
   for (let i = 0; i < d.length; i += 4) {
-    const a = d[i + 3];
-    if (a < 108) {
+    if ((d[i + 3] ?? 0) < 108) {
       d[i + 3] = 0;
       continue;
     }
     d[i + 3] = 255;
-    d[i] = Math.min(255, Math.round(d[i] / step) * step);
-    d[i + 1] = Math.min(255, Math.round(d[i + 1] / step) * step);
-    d[i + 2] = Math.min(255, Math.round(d[i + 2] / step) * step);
+    d[i] = snap(d[i] ?? 0);
+    d[i + 1] = snap(d[i + 1] ?? 0);
+    d[i + 2] = snap(d[i + 2] ?? 0);
   }
   ctx.putImageData(data, 0, 0);
 }
